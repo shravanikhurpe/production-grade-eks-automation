@@ -1,45 +1,56 @@
 Production-Grade EKS Automation with Jenkins and Terraform
 
-This repository demonstrates a production-ready workflow for provisioning Amazon EKS clusters, deploying containerized applications, and automating the CI/CD process using Jenkins and Terraform.
+This repository demonstrates a production-ready pipeline for provisioning Amazon EKS clusters, deploying containerized applications, and automating the CI/CD process using Jenkins and Terraform.
 
 1. Overview
 
-The project covers the complete DevOps pipeline:
+This project covers:
 
-Infrastructure provisioning with Terraform
+Infrastructure provisioning using Terraform
+
+Amazon EKS cluster setup
 
 Docker-based application containerization
 
-Deployment to an Amazon EKS cluster
+Image storage in Amazon ECR
 
-Image storage and versioning using Amazon ECR
+Kubernetes application deployment
 
-Automated CI/CD workflow via Jenkins
+Jenkins-driven CI/CD automation
 
-Kubernetes manifests for application deployment
-
-Monitoring setup using Prometheus and Grafana
+Monitoring using Prometheus and Grafana
 
 2. Architecture Summary
+Infrastructure
 
-This solution includes:
+AWS VPC, subnets, routing
 
-AWS VPC, subnets, routing, and networking resources
-
-Elastic Kubernetes Service (EKS) cluster with node groups
+EKS cluster with managed node groups
 
 IAM roles and permissions
 
-Docker image build pipeline and ECR push
+Terraform backend, variables, and environment-based tfvars
 
-Kubernetes Deployment and Service configuration
+Application & Deployment
 
-Monitoring setup for cluster and application metrics
+Dockerfile for application image
 
-CI/CD pipeline written in Groovy
+Kubernetes Deployment and Service manifests
+
+Namespace-based isolation
+
+CI/CD Pipeline
+
+Terraform init / plan / apply
+
+Docker build, tag, and push to ECR
+
+Kubernetes rollout via kubectl
+
+Groovy-based Jenkins pipeline
 
 3. Repository Structure
-.
+production-grade-eks-automation
 ├── terraform-eks-infra
 │   ├── backend.tf
 │   ├── data.tf
@@ -63,115 +74,109 @@ CI/CD pipeline written in Groovy
 ├── monitoring
 │   └── prometheus-config.yaml
 │
-├── Dockerfile
 ├── CI-CD-pipeline.groovy
+├── Dockerfile
 ├── changelog.txt
 └── README.md
 
 4. Features
 Terraform Infrastructure
 
-Automated creation of AWS VPC
+Automated VPC creation
 
-Subnets, route tables, and IGW
+Public / private subnets
+
+Route tables and IGW
 
 EKS cluster provisioning
 
-Node group configurations
+Managed node groups
 
-IAM policies and roles
+IAM roles and permissions
 
 Application Deployment
 
-Docker-based application build
+Build application container using Docker
 
-Kubernetes Deployment and Service
+Deployment and Service for Kubernetes
 
-Namespace-based isolation
+Rollout strategy using Kubernetes
 
-Jenkins CI/CD Pipeline
+CI/CD Automation (Jenkins)
 
-Code checkout
+Repository checkout
 
-Terraform init, plan, and apply
+Terraform execution
 
-Docker build and tag
+Docker build + ECR push
 
-ECR authentication and push
+kubectl-based rolling deployment
 
-kubectl apply for deployment rollouts
+End-to-end automated delivery
 
 Monitoring
 
-Prometheus rules and configurations
+Prometheus configuration
 
-Grafana-compatible metrics export
+Grafana-ready metrics
 
 5. Jenkins Pipeline Workflow
 
-Clone repository
+The CI/CD pipeline performs:
 
-Initialize Terraform
+Check out source code
 
-Validate plan and apply infrastructure
+Run Terraform init
 
-Build and tag Docker image
+Run Terraform plan
 
-Push image to Amazon ECR
+Apply infrastructure changes
 
-Deploy/upgrade application on EKS
+Build Docker image
 
-Apply Kubernetes manifests for services and rollouts
+Push image to AWS ECR
 
-All logic is contained in:
+Deploy application to EKS
+
+Apply Kubernetes manifests
+
+Pipeline definition is in:
 CI-CD-pipeline.groovy
 
 6. Prerequisites
 
-Ensure the following are installed and configured:
+Ensure the following tools are installed:
 
 AWS CLI
 
 Terraform
 
-kubectl
-
 Docker
 
-Jenkins with required plugins
+kubectl
 
-IAM permissions for EKS, EC2, ECR, IAM
+Jenkins
 
-7. How to Run
+IAM permissions for EKS, EC2, ECR
 
-Update Terraform variables inside variables.tf and .tfvars files
-
-Run Terraform:
-
+7. Usage
+1. Initialize Terraform
+cd terraform-eks-infra
 terraform init
-terraform plan -var-file=variables/dev.tfvars
+
+2. Apply infrastructure
 terraform apply -var-file=variables/dev.tfvars
 
-
-Update kubeconfig:
-
+3. Update kubeconfig
 aws eks update-kubeconfig --name <cluster-name>
 
-
-Build and push Docker image:
-
+4. Build and push Docker image
 docker build -t eks-app .
-docker tag eks-app:latest <AWS_ACCOUNT_ID>.dkr.ecr.<region>.amazonaws.com/eks-app:latest
-docker push <AWS_ACCOUNT_ID>.dkr.ecr.<region>.amazonaws.com/eks-app:latest
+docker tag eks-app:latest <AWS_ID>.dkr.ecr.<region>.amazonaws.com/eks-app:latest
+docker push <AWS_ID>.dkr.ecr.<region>.amazonaws.com/eks-app:latest
 
-
-Deploy application:
-
+5. Deploy to Kubernetes
 kubectl apply -f k8s-manifests/deployment.yaml
 kubectl apply -f k8s-manifests/service.yaml
 
-
-Trigger Jenkins pipeline for automation
-
-
-
+6. Trigger Jenkins pipeline
