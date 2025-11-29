@@ -1,201 +1,197 @@
-Production-Grade EKS Automation with Jenkins and Terraform
 
-This repository contains a production-ready DevOps workflow that provisions AWS EKS clusters using Terraform, builds and pushes Docker images to Amazon ECR, and automates application deployment via Jenkins.
-It demonstrates an end-to-end real-world CI/CD + Infrastructure-as-Code pipeline suitable for cloud-native applications.
 
-1. Overview
+# **Production-Ready Kubernetes Deployment Automation with CI/CD**
+
+This project implements a production-style DevOps workflow by automating Kubernetes deployments using **Terraform, Docker, Jenkins, and Kubernetes manifests**. It demonstrates full infrastructure automation, containerization, CI/CD integration, and Kubernetes orchestration in a modular, scalable setup.
+
+---
+
+# **Project Overview**
+
+This repository contains an **end-to-end automation pipeline** for deploying containerized applications on Kubernetes.
+It covers:
+
+* Infrastructure provisioning using **Terraform**
+* Containerization using **Docker**
+* Continuous Integration & Delivery using **Jenkins**
+* Application deployment via **Kubernetes manifests**
+* Monitoring setup using **Prometheus**
+
+This structure mirrors real-world enterprise DevOps practices.
+
+---
+
+# **Architecture**
 
-This project includes:
+```
+                 ┌───────────────────────────┐
+                 │           GitHub           │
+                 └───────────────┬───────────┘
+                                 │  (Push Code)
+                                 ▼
+                        ┌────────────────┐
+                        │    Jenkins CI  │
+                        └───────┬────────┘
+                                │
+                      Build + Test + Dockerize
+                                │
+                                ▼
+                    ┌──────────────────────┐
+                    │   Docker Registry    │
+                    └──────────┬───────────┘
+                               │
+                      Terraform Provisioning
+                               │
+                               ▼
+                   ┌─────────────────────┐
+                   │   Kubernetes Cluster │
+                   │ (Minikube / K8s)     │
+                   └──────────┬───────────┘
+                              │
+                         Deploy Application
+                              │
+                              ▼
+                 ┌───────────────────────────┐
+                 │   Monitoring (Prometheus)  │
+                 └───────────────────────────┘
+```
 
-Automated EKS cluster provisioning using Terraform
+---
 
-Docker-based application containerization
+# **Tech Stack**
 
-CI/CD pipeline using Jenkins (Groovy pipeline)
+### DevOps & CI/CD
 
-Kubernetes deployment and service manifests
+* Jenkins
+* Jenkinsfile (Declarative Pipeline)
+* GitHub
 
-Monitoring setup using Prometheus
+### Infrastructure as Code
 
-Namespace-based application isolation
+* Terraform
+* Terraform Modules
 
-End-to-end automation from infrastructure → build → deploy
+### Containerization & Orchestration
 
-This setup reflects how production DevOps teams manage cloud-native workloads.
+* Docker
+* Kubernetes (K8s)
+* Minikube
+* kubectl
 
-2. Architecture Summary
+### Monitoring
 
-Technologies Used
+* Prometheus
 
-AWS EKS
+---
 
-Terraform
+# **Project Structure**
 
-Jenkins (Groovy scripted pipeline)
+```
+production-ready-k8s-deployment-automation-cicd/
+│
+├── jenkins/
+│   └── Jenkinsfile
+│
+├── terraform/
+│   ├── main.tf
+│   ├── variables.tf
+│   ├── outputs.tf
+│   └── provider.tf
+│
+├── k8s-manifests/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   ├── configmap.yaml
+│   └── ingress.yaml
+│
+├── Dockerfile
+├── scripts/
+└── README.md
+```
 
-Docker
+---
 
-Amazon ECR
+# **Key Features**
 
-Kubernetes (kubectl)
+### 1. Kubernetes Infrastructure Automation
 
-Prometheus (basic monitoring)
+Provision Kubernetes resources and environments using **Terraform** for reproducibility and standardization.
 
-Pipeline Flow
+### 2. CI/CD Pipeline
 
-Checkout source code
+Jenkins automates build, test, containerization, and deployment workflows.
 
-Terraform init, plan, and apply to provision EKS cluster
+### 3. Kubernetes Deployment
 
-Build Docker image
+Production-style Kubernetes manifests for deployments, services, ingress, config maps, and updates.
 
-Authenticate and push image to ECR
+### 4. Monitoring Integration
 
-Deploy Kubernetes manifests to the EKS cluster
+Prometheus setup for monitoring metrics and cluster health.
 
-Configure monitoring
+---
 
-3. Repository Structure
-Terraform Infrastructure (terraform-eks-infra/)
+# **How to Run the Project**
 
-backend.tf
+### 1. Clone the Repository
 
-data.tf
+```bash
+git clone https://github.com/shravanikhurpe/production-ready-k8s-deployment-automation-cicd.git
+cd production-ready-k8s-deployment-automation-cicd
+```
 
-eks.tf
+### 2. Start Minikube
 
-provider.tf
+```bash
+minikube start
+```
 
-vpc.tf
+### 3. Apply Terraform Infrastructure
 
-variables.tf
-
-variables/
-
-dev.tfvars
-
-prod.tfvars
-
-test.tfvars
-
-Jenkins Configuration (jenkins-config/)
-
-scripts/
-
-install_build_tools.sh
-
-Kubernetes Manifests (k8s-manifests/)
-
-deployment.yaml
-
-service.yaml
-
-Monitoring (monitoring/)
-
-prometheus-config.yaml
-
-CI/CD Pipeline
-
-CI-CD-pipeline.groovy
-
-Application Container
-
-Dockerfile
-
-Additional Files
-
-changelog.txt
-
-README.md
-
-image.png
-
-4. Terraform Infrastructure Features
-
-Automated provisioning of AWS VPC
-
-Public and private subnets
-
-Route tables and Internet Gateway
-
-EKS cluster creation
-
-Managed node groups
-
-IAM roles and policies
-
-Environment-specific variable files (dev, prod, test)
-
-5. CI/CD Pipeline Features
-
-The Jenkins Groovy pipeline includes:
-
-Source code checkout
-
-Terraform initialization
-
-Terraform plan and apply
-
-Docker image build
-
-ECR authentication
-
-Docker image push
-
-Kubernetes deployment rollout
-
-Monitoring setup
-
-This pipeline fully automates infrastructure + deployment.
-
-6. Kubernetes Deployment Features
-
-Deployment manifest for application pod replicas
-
-Service manifest for internal/external access
-
-Namespace-based isolation for cleaner environments
-
-kubectl rollout automation via Jenkins
-
-7. Monitoring Setup
-
-Prometheus config is included under the monitoring directory.
-It tracks:
-
-Pod metrics
-
-Cluster resource usage
-
-Basic application availability
-
-This provides visibility into the deployed workload.
-
-8. How to Use This Project
-Prerequisites
-
-AWS CLI configured
-
-Terraform installed
-
-Docker installed
-
-Jenkins server available
-
-kubectl installed
-
-IAM permissions for EKS, EC2, VPC, ECR
-
-Local Setup
+```bash
+cd terraform
 terraform init
-terraform plan -var-file=variables/dev.tfvars
-terraform apply -var-file=variables/dev.tfvars -auto-approve
+terraform apply
+```
 
-Build & Push Docker Image
-docker build -t eks-app .
-docker tag eks-app:latest <AWS_ACCOUNT_ID>.dkr.ecr.<region>.amazonaws.com/eks-app:latest
-docker push <AWS_ACCOUNT_ID>.dkr.ecr.<region>.amazonaws.com/eks-app:latest
+### 4. Build Docker Image
 
-Deploy to Kubernetes
-kubectl apply -f k8s-manifests/deployment.yaml
-kubectl apply -f k8s-manifests/service.yaml
+```bash
+docker build -t <your-image> .
+```
+
+### 5. Deploy to Kubernetes
+
+```bash
+kubectl apply -f k8s-manifests/
+```
+
+### 6. Run Jenkins Pipeline
+
+Configure Jenkins, connect repository, and run the pipeline to enable automated deployment.
+
+---
+
+# **CI/CD Workflow Summary**
+
+1. Code pushed to GitHub
+2. Jenkins triggers pipeline
+3. Application is built and containerized
+4. Docker image pushed to registry
+5. Terraform provisions/updates infra
+6. Kubernetes deployment applied
+7. Prometheus monitors resources
+
+---
+
+# **Conclusion**
+
+This project demonstrates the complete DevOps lifecycle, combining:
+
+* Infrastructure as Code
+* CI/CD automation
+* Containerization
+* Kubernetes deployment
+* Monitoring
+
+---
